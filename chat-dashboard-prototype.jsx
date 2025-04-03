@@ -8,17 +8,18 @@ const ChatDashboardPrototype = () => {
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMetric, setActiveMetric] = useState('pending');
+  const [username] = useState('Sasha'); // Added username
   
   // Sample data
   const [chats, setChats] = useState([
     { id: 1, type: 'private', name: 'Sarah Johnson', unread: 2, messages: [
       { id: 1, sender: 'Sarah Johnson', content: 'Hi there! Do you have time for a quick meeting today?', time: '9:30 AM', priority: 'normal' },
-      { id: 2, sender: 'Me', content: 'Sure, I\'m free after 2 PM', time: '9:35 AM', priority: 'normal' },
-      { id: 3, sender: 'Sarah Johnson', content: 'Great! Let\'s meet at 3 PM in Room A102. @you Please bring the project report.', time: '9:40 AM', priority: 'high', tagged: true },
+      { id: 2, sender: username, content: 'Sure, I\'m free after 2 PM', time: '9:35 AM', priority: 'normal' },
+      { id: 3, sender: 'Sarah Johnson', content: `Great! Let\'s meet at 3 PM in Room A102. @${username} Please bring the project report.`, time: '9:40 AM', priority: 'high', tagged: true },
     ]},
     { id: 2, type: 'private', name: 'David Miller', unread: 0, messages: [
       { id: 1, sender: 'David Miller', content: 'Have you reviewed the bug report?', time: '8:15 AM', priority: 'normal' },
-      { id: 2, sender: 'Me', content: 'Working on it now', time: '8:20 AM', priority: 'normal' },
+      { id: 2, sender: username, content: 'Working on it now', time: '8:20 AM', priority: 'normal' },
     ]},
     { id: 3, type: 'group', name: 'Product Team', unread: 5, messages: [
       { id: 1, sender: 'Alex Chen', content: 'Team, our next sprint planning is tomorrow', time: 'Yesterday', priority: 'normal' },
@@ -26,7 +27,7 @@ const ChatDashboardPrototype = () => {
     ]},
     { id: 4, type: 'group', name: 'Design Review', unread: 0, messages: [
       { id: 1, sender: 'Lisa Park', content: 'New mockups are ready for review', time: 'Yesterday', priority: 'normal' },
-      { id: 2, sender: 'Me', content: 'They look great! I have a few suggestions for the navigation', time: 'Yesterday', priority: 'normal' },
+      { id: 2, sender: username, content: 'They look great! I have a few suggestions for the navigation', time: 'Yesterday', priority: 'normal' },
     ]},
   ]);
   
@@ -71,7 +72,7 @@ const ChatDashboardPrototype = () => {
             ...chat.messages,
             {
               id: chat.messages.length + 1,
-              sender: 'Me',
+              sender: username,
               content: message,
               time: getCurrentTime(),
               priority: 'normal'
@@ -343,8 +344,14 @@ const ChatDashboardPrototype = () => {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <div className="bg-blue-600 text-white p-4 shadow-md">
+      <div className="bg-blue-600 text-white p-4 shadow-md flex justify-between items-center">
         <h1 className="text-xl font-semibold">Workspace Dashboard</h1>
+        <div className="flex items-center">
+          <span className="mr-2">Welcome, {username}</span>
+          <div className="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center">
+            {username.charAt(0)}
+          </div>
+        </div>
       </div>
       
       {/* Main Navigation */}
@@ -442,9 +449,9 @@ const ChatDashboardPrototype = () => {
                   
                   <div className="flex-1 overflow-auto p-4 space-y-4">
                     {selectedChat.messages.map(msg => (
-                      <div key={msg.id} className={`flex ${msg.sender === 'Me' ? 'justify-end' : 'justify-start'}`}>
+                      <div key={msg.id} className={`flex ${msg.sender === username ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-xs rounded-lg p-3 ${
-                          msg.sender === 'Me' 
+                          msg.sender === username 
                             ? 'bg-blue-500 text-white' 
                             : 'bg-gray-200'
                         } ${
@@ -466,7 +473,7 @@ const ChatDashboardPrototype = () => {
                           </div>
                           <div>{msg.content}</div>
                           
-                          {msg.sender !== 'Me' && (
+                          {msg.sender !== username && (
                             <div className="mt-2 flex justify-end space-x-1">
                               <button 
                                 onClick={() => setPriority(selectedChat.id, msg.id, 'normal')}
